@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use solana_program::{pubkey, pubkey::Pubkey};
 
-declare_id!("EvViEBWR7aNDFD3rtou1GhjdYyQ31QW36UwQ1aFqPHVh");
+declare_id!("CuVwVRBD5pVvzmnKsaTmVjaL1aeRSHDEusnJ45TXAKXm");
 
 const ADMIN_PUBKEY: Pubkey = pubkey!("J5gtLJ5kohxPs4qDrNzbSGGNireSV683nfTbGUKLptE6");
 
@@ -37,11 +37,13 @@ pub mod proposal {
         if signer.key() != proposal.author.key() && signer.key() != ADMIN_PUBKEY.key() {
             return err!(CustomError::NotAuthorOrAdmin);
         }
+        //TODO: Delete all votes associated with the proposal? (+allow proposal owner to delete votes on its proposal)
         msg!("Deleting proposal!");
         Ok(())
     }
 
     pub fn create_vote(ctx: Context<CreateVote>, positive: bool) -> Result<()> {
+        //TODO: Prevent voting on own proposal
         let vote = &mut ctx.accounts.vote;
         vote.author = ctx.accounts.author.key();
         vote.proposal = ctx.accounts.proposal.key();
