@@ -12,6 +12,8 @@ pub mod proposal {
         proposed_name: String,
         proposed_type: String,
     ) -> Result<()> {
+        require!(proposed_name.len() <= 34, CustomError::NameTooLong);
+        require!(proposed_type.len() <= 10, CustomError::TypeTooLong);
         let proposal = &mut ctx.accounts.proposal;
         proposal.authority = ctx.accounts.authority.key();
         proposal.program = ctx.accounts.program.key();
@@ -45,6 +47,13 @@ pub mod proposal {
 
     pub fn change_vote(ctx: Context<ChangeVote>, positive: bool) -> Result<()> {
         let vote = &mut ctx.accounts.vote;
+        if vote.positive == positive {
+            return if positive {
+                err!(CustomError::AlreadyUpvoted)
+            } else {
+                err!(CustomError::AlreadyDownvoted)
+            };
+        }
         vote.positive = positive;
         msg!("Changed vote to positive:{}", vote.positive);
         Ok(())
@@ -126,4 +135,17 @@ pub struct Vote {
     authority: Pubkey, //32
     proposal: Pubkey,  //32
     positive: bool,    //1
+}
+
+//Errors
+#[error_code]
+pub enum CustomError {
+    #[msg("Name should not exceed 10 characters")]
+    NameTooLong,
+    #[msg("Type should not exceed 34 characters")]
+    TypeTooLong,
+    #[msg("You already upvoted this proposal")]
+    AlreadyUpvoted,
+    #[msg("You already downvoted this proposal")]
+    AlreadyDownvoted,
 }
