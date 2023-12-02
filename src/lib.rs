@@ -29,6 +29,31 @@ pub mod proposal {
         msg!("Deleting proposal!");
         Ok(())
     }
+
+    pub fn create_vote(ctx: Context<CreateVote>, positive: bool) -> Result<()> {
+        let vote = &mut ctx.accounts.vote;
+        vote.authority = ctx.accounts.authority.key();
+        vote.proposal = ctx.accounts.proposal.key();
+        vote.positive = positive;
+        msg!(
+            "Created vote by:{} for proposal:{}",
+            vote.authority,
+            vote.proposal
+        );
+        Ok(())
+    }
+
+    pub fn change_vote(ctx: Context<ChangeVote>, positive: bool) -> Result<()> {
+        let vote = &mut ctx.accounts.vote;
+        vote.positive = positive;
+        msg!("Changed vote to positive:{}", vote.positive);
+        Ok(())
+    }
+
+    pub fn delete_vote(_ctx: Context<DeleteVote>) -> Result<()> {
+        msg!("Deleting vote!");
+        Ok(())
+    }
 }
 
 // Data validators
@@ -56,6 +81,37 @@ pub struct DeleteProposal<'info> {
     proposal: Account<'info, Proposal>,
 }
 
+#[derive(Accounts)]
+pub struct CreateVote<'info> {
+    #[account(mut)]
+    authority: Signer<'info>,
+    #[account(mut)]
+    proposal: Account<'info, Proposal>,
+    #[account(
+        init,
+        seeds = [authority.key().as_ref(), proposal.key().as_ref()],
+        bump,
+        payer = authority,
+        space = 73
+    )]
+    vote: Account<'info, Vote>,
+    system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct ChangeVote<'info> {
+    authority: Signer<'info>,
+    #[account(mut, has_one = authority)]
+    vote: Account<'info, Vote>,
+}
+
+#[derive(Accounts)]
+pub struct DeleteVote<'info> {
+    authority: Signer<'info>,
+    #[account(mut, has_one = authority, close = authority)]
+    vote: Account<'info, Vote>,
+}
+
 // Data structures
 #[account] //8 + 116 = 124
 pub struct Proposal {
@@ -63,4 +119,11 @@ pub struct Proposal {
     program: Pubkey,       //32
     proposed_name: String, //4 + 10: 14
     proposed_type: String, //4 + 34: 38
+}
+
+#[account] //8 + 65 = 73
+pub struct Vote {
+    authority: Pubkey, //32
+    proposal: Pubkey,  //32
+    positive: bool,    //1
 }
