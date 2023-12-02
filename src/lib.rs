@@ -1,6 +1,9 @@
 use anchor_lang::prelude::*;
+use solana_program::{pubkey, pubkey::Pubkey};
 
 declare_id!("EvViEBWR7aNDFD3rtou1GhjdYyQ31QW36UwQ1aFqPHVh");
+
+const ADMIN_PUBKEY: Pubkey = pubkey!("J5gtLJ5kohxPs4qDrNzbSGGNireSV683nfTbGUKLptE6");
 
 #[program]
 // Smart contract functions
@@ -28,7 +31,12 @@ pub mod proposal {
         Ok(())
     }
 
-    pub fn delete_proposal(_ctx: Context<DeleteProposal>) -> Result<()> {
+    pub fn delete_proposal(ctx: Context<DeleteProposal>) -> Result<()> {
+        let signer = &mut ctx.accounts.signer;
+        let proposal = &mut ctx.accounts.proposal;
+        if signer.key() != proposal.author.key() && signer.key() != ADMIN_PUBKEY.key() {
+            return err!(CustomError::NotAuthorOrAdmin);
+        }
         msg!("Deleting proposal!");
         Ok(())
     }
@@ -65,7 +73,11 @@ pub mod proposal {
     }
 
     pub fn delete_vote(ctx: Context<DeleteVote>) -> Result<()> {
+        let signer = &mut ctx.accounts.signer;
         let vote = &mut ctx.accounts.vote;
+        if signer.key() != vote.author.key() && signer.key() != ADMIN_PUBKEY.key() {
+            return err!(CustomError::NotAuthorOrAdmin);
+        }
         let proposal = &mut ctx.accounts.proposal;
         proposal.score += if vote.positive { -1 } else { 1 };
         msg!("Deleting vote!");
@@ -93,8 +105,8 @@ pub struct CreateProposal<'info> {
 
 #[derive(Accounts)]
 pub struct DeleteProposal<'info> {
-    author: Signer<'info>,
-    #[account(mut, has_one = author, close = author)]
+    signer: Signer<'info>,
+    #[account(mut, close = signer)]
     proposal: Account<'info, Proposal>,
 }
 
@@ -126,17 +138,17 @@ pub struct ChangeVote<'info> {
 
 #[derive(Accounts)]
 pub struct DeleteVote<'info> {
-    author: Signer<'info>,
+    signer: Signer<'info>,
     #[account(mut)]
     proposal: Account<'info, Proposal>,
-    #[account(mut, has_one = author, close = author)]
+    #[account(mut, close = signer)]
     vote: Account<'info, Vote>,
 }
 
 // Data structures
 #[account] //8 + 116 = 124
 pub struct Proposal {
-    author: Pubkey,     //32
+    author: Pubkey,        //32
     program: Pubkey,       //32
     proposed_name: String, //4 + 34: 38
     proposed_type: String, //4 + 10: 14
@@ -145,9 +157,9 @@ pub struct Proposal {
 
 #[account] //8 + 65 = 73
 pub struct Vote {
-    author: Pubkey, //32
-    proposal: Pubkey,  //32
-    positive: bool,    //1
+    author: Pubkey,   //32
+    proposal: Pubkey, //32
+    positive: bool,   //1
 }
 
 //Errors
@@ -161,4 +173,6 @@ pub enum CustomError {
     AlreadyUpvoted,
     #[msg("Signer already downvoted this proposal")]
     AlreadyDownvoted,
+    #[msg("Signer must be the author or admin")]
+    NotAuthorOrAdmin,
 }
