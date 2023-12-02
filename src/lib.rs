@@ -70,7 +70,7 @@ pub mod proposal {
 pub struct CreateProposal<'info> {
     #[account(mut)]
     authority: Signer<'info>,
-    #[account(mut)]
+    #[account(executable)]
     program: UncheckedAccount<'info>,
     #[account(
         init,
@@ -126,8 +126,8 @@ pub struct DeleteVote<'info> {
 pub struct Proposal {
     authority: Pubkey,     //32
     program: Pubkey,       //32
-    proposed_name: String, //4 + 10: 14
-    proposed_type: String, //4 + 34: 38
+    proposed_name: String, //4 + 34: 38
+    proposed_type: String, //4 + 10: 14
 }
 
 #[account] //8 + 65 = 73
