@@ -15,14 +15,14 @@ pub mod proposal {
         require!(proposed_name.len() <= 34, CustomError::NameTooLong);
         require!(proposed_type.len() <= 10, CustomError::TypeTooLong);
         let proposal = &mut ctx.accounts.proposal;
-        proposal.authority = ctx.accounts.authority.key();
+        proposal.author = ctx.accounts.author.key();
         proposal.program = ctx.accounts.program.key();
         proposal.proposed_name = proposed_name;
         proposal.proposed_type = proposed_type;
         proposal.score = 1;
         msg!(
             "Created proposal by:{} for program:{}",
-            proposal.authority,
+            proposal.author,
             proposal.program
         );
         Ok(())
@@ -35,14 +35,14 @@ pub mod proposal {
 
     pub fn create_vote(ctx: Context<CreateVote>, positive: bool) -> Result<()> {
         let vote = &mut ctx.accounts.vote;
-        vote.authority = ctx.accounts.authority.key();
+        vote.author = ctx.accounts.author.key();
         vote.proposal = ctx.accounts.proposal.key();
         vote.positive = positive;
         let proposal = &mut ctx.accounts.proposal;
         proposal.score += if positive { 1 } else { -1 };
         msg!(
             "Created vote by:{} for proposal:{}",
-            vote.authority,
+            vote.author,
             vote.proposal
         );
         Ok(())
@@ -77,14 +77,14 @@ pub mod proposal {
 #[derive(Accounts)]
 pub struct CreateProposal<'info> {
     #[account(mut)]
-    authority: Signer<'info>,
+    author: Signer<'info>,
     #[account(executable)]
     program: UncheckedAccount<'info>,
     #[account(
         init,
-        seeds = [authority.key().as_ref(), program.key().as_ref()],
+        seeds = [author.key().as_ref(), program.key().as_ref()],
         bump,
-        payer = authority,
+        payer = author,
         space = 124
     )]
     proposal: Account<'info, Proposal>,
@@ -93,22 +93,22 @@ pub struct CreateProposal<'info> {
 
 #[derive(Accounts)]
 pub struct DeleteProposal<'info> {
-    authority: Signer<'info>,
-    #[account(mut, has_one = authority, close = authority)]
+    author: Signer<'info>,
+    #[account(mut, has_one = author, close = author)]
     proposal: Account<'info, Proposal>,
 }
 
 #[derive(Accounts)]
 pub struct CreateVote<'info> {
     #[account(mut)]
-    authority: Signer<'info>,
+    author: Signer<'info>,
     #[account(mut)]
     proposal: Account<'info, Proposal>,
     #[account(
         init,
-        seeds = [authority.key().as_ref(), proposal.key().as_ref()],
+        seeds = [author.key().as_ref(), proposal.key().as_ref()],
         bump,
-        payer = authority,
+        payer = author,
         space = 73
     )]
     vote: Account<'info, Vote>,
@@ -117,26 +117,26 @@ pub struct CreateVote<'info> {
 
 #[derive(Accounts)]
 pub struct ChangeVote<'info> {
-    authority: Signer<'info>,
+    author: Signer<'info>,
     #[account(mut)]
     proposal: Account<'info, Proposal>,
-    #[account(mut, has_one = authority)]
+    #[account(mut, has_one = author)]
     vote: Account<'info, Vote>,
 }
 
 #[derive(Accounts)]
 pub struct DeleteVote<'info> {
-    authority: Signer<'info>,
+    author: Signer<'info>,
     #[account(mut)]
     proposal: Account<'info, Proposal>,
-    #[account(mut, has_one = authority, close = authority)]
+    #[account(mut, has_one = author, close = author)]
     vote: Account<'info, Vote>,
 }
 
 // Data structures
 #[account] //8 + 116 = 124
 pub struct Proposal {
-    authority: Pubkey,     //32
+    author: Pubkey,     //32
     program: Pubkey,       //32
     proposed_name: String, //4 + 34: 38
     proposed_type: String, //4 + 10: 14
@@ -145,7 +145,7 @@ pub struct Proposal {
 
 #[account] //8 + 65 = 73
 pub struct Vote {
-    authority: Pubkey, //32
+    author: Pubkey, //32
     proposal: Pubkey,  //32
     positive: bool,    //1
 }
@@ -157,8 +157,8 @@ pub enum CustomError {
     NameTooLong,
     #[msg("Type should not exceed 34 characters")]
     TypeTooLong,
-    #[msg("You already upvoted this proposal")]
+    #[msg("Signer already upvoted this proposal")]
     AlreadyUpvoted,
-    #[msg("You already downvoted this proposal")]
+    #[msg("Signer already downvoted this proposal")]
     AlreadyDownvoted,
 }
