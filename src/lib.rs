@@ -19,6 +19,7 @@ pub mod proposal {
         proposal.program = ctx.accounts.program.key();
         proposal.proposed_name = proposed_name;
         proposal.proposed_type = proposed_type;
+        proposal.score = 1;
         msg!(
             "Created proposal by:{} for program:{}",
             proposal.authority,
@@ -37,6 +38,8 @@ pub mod proposal {
         vote.authority = ctx.accounts.authority.key();
         vote.proposal = ctx.accounts.proposal.key();
         vote.positive = positive;
+        let proposal = &mut ctx.accounts.proposal;
+        proposal.score += if positive { 1 } else { -1 };
         msg!(
             "Created vote by:{} for proposal:{}",
             vote.authority,
@@ -55,11 +58,16 @@ pub mod proposal {
             };
         }
         vote.positive = positive;
+        let proposal = &mut ctx.accounts.proposal;
+        proposal.score += if positive { 2 } else { -2 };
         msg!("Changed vote to positive:{}", vote.positive);
         Ok(())
     }
 
-    pub fn delete_vote(_ctx: Context<DeleteVote>) -> Result<()> {
+    pub fn delete_vote(ctx: Context<DeleteVote>) -> Result<()> {
+        let vote = &mut ctx.accounts.vote;
+        let proposal = &mut ctx.accounts.proposal;
+        proposal.score += if vote.positive { -1 } else { 1 };
         msg!("Deleting vote!");
         Ok(())
     }
@@ -110,6 +118,8 @@ pub struct CreateVote<'info> {
 #[derive(Accounts)]
 pub struct ChangeVote<'info> {
     authority: Signer<'info>,
+    #[account(mut)]
+    proposal: Account<'info, Proposal>,
     #[account(mut, has_one = authority)]
     vote: Account<'info, Vote>,
 }
@@ -117,6 +127,8 @@ pub struct ChangeVote<'info> {
 #[derive(Accounts)]
 pub struct DeleteVote<'info> {
     authority: Signer<'info>,
+    #[account(mut)]
+    proposal: Account<'info, Proposal>,
     #[account(mut, has_one = authority, close = authority)]
     vote: Account<'info, Vote>,
 }
@@ -128,6 +140,7 @@ pub struct Proposal {
     program: Pubkey,       //32
     proposed_name: String, //4 + 34: 38
     proposed_type: String, //4 + 10: 14
+    score: i16,            //2
 }
 
 #[account] //8 + 65 = 73
