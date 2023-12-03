@@ -7,7 +7,7 @@ const ADMIN_PUBKEY: Pubkey = pubkey!("J5gtLJ5kohxPs4qDrNzbSGGNireSV683nfTbGUKLpt
 
 #[program]
 // Smart contract functions
-pub mod proposal {
+pub mod solactivity {
     use super::*;
 
     pub fn create_proposal(
