@@ -28,11 +28,15 @@
             ],
             "args": [
                 {
-                    "name": "proposedName",
+                    "name": "name",
                     "type": "string"
                 },
                 {
-                    "name": "proposedType",
+                    "name": "group",
+                    "type": "string"
+                },
+                {
+                    "name": "subGroup",
                     "type": "string"
                 }
             ]
@@ -147,16 +151,20 @@
                         "type": "publicKey"
                     },
                     {
-                        "name": "proposedName",
+                        "name": "name",
                         "type": "string"
                     },
                     {
-                        "name": "proposedType",
+                        "name": "group",
+                        "type": "string"
+                    },
+                    {
+                        "name": "subGroup",
                         "type": "string"
                     },
                     {
                         "name": "score",
-                        "type": "i16"
+                        "type": "i32"
                     }
                 ]
             }
@@ -186,25 +194,30 @@
         {
             "code": 6000,
             "name": "NameTooLong",
-            "msg": "Name should not exceed 10 characters"
+            "msg": "Name should not exceed 34 characters"
         },
         {
             "code": 6001,
-            "name": "TypeTooLong",
-            "msg": "Type should not exceed 34 characters"
+            "name": "GroupTooLong",
+            "msg": "Group should not exceed 8 characters"
         },
         {
             "code": 6002,
+            "name": "SubGroupTooLong",
+            "msg": "Sub Group should not exceed 18 characters"
+        },
+        {
+            "code": 6003,
             "name": "AlreadyUpvoted",
             "msg": "Signer already upvoted this proposal"
         },
         {
-            "code": 6003,
+            "code": 6004,
             "name": "AlreadyDownvoted",
             "msg": "Signer already downvoted this proposal"
         },
         {
-            "code": 6004,
+            "code": 6005,
             "name": "NotAuthorOrAdmin",
             "msg": "Signer must be the author or admin"
         }
