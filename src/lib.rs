@@ -17,8 +17,8 @@ pub mod solactivity {
         sub_group: String,
     ) -> Result<()> {
         require!(name.len() <= 34, CustomError::NameTooLong);
-        require!(group.len() <= 8, CustomError::GoupTooLong);
-        require!(sub_group.len() <= 18, CustomError::SubGoupTooLong);
+        require!(group.len() <= 8, CustomError::GroupTooLong);
+        require!(sub_group.len() <= 18, CustomError::SubGroupTooLong);
         let proposal = &mut ctx.accounts.proposal;
         proposal.author = ctx.accounts.author.key();
         proposal.program = ctx.accounts.program.key();
@@ -173,9 +173,9 @@ pub enum CustomError {
     #[msg("Name should not exceed 34 characters")]
     NameTooLong,
     #[msg("Group should not exceed 8 characters")]
-    GoupTooLong,
+    GroupTooLong,
     #[msg("Sub Group should not exceed 18 characters")]
-    SubGoupTooLong,
+    SubGroupTooLong,
     #[msg("Signer already upvoted this proposal")]
     AlreadyUpvoted,
     #[msg("Signer already downvoted this proposal")]
