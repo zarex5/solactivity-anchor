@@ -1,0 +1,212 @@
+{
+    "version": "0.1.0",
+    "name": "solactivity",
+    "instructions": [
+        {
+            "name": "createProposal",
+            "accounts": [
+                {
+                    "name": "author",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "program",
+                    "isMut": false,
+                    "isSigner": false
+                },
+                {
+                    "name": "proposal",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "proposedName",
+                    "type": "string"
+                },
+                {
+                    "name": "proposedType",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "deleteProposal",
+            "accounts": [
+                {
+                    "name": "signer",
+                    "isMut": false,
+                    "isSigner": true
+                },
+                {
+                    "name": "proposal",
+                    "isMut": true,
+                    "isSigner": false
+                }
+            ],
+            "args": []
+        },
+        {
+            "name": "createVote",
+            "accounts": [
+                {
+                    "name": "author",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "proposal",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "vote",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "positive",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "changeVote",
+            "accounts": [
+                {
+                    "name": "author",
+                    "isMut": false,
+                    "isSigner": true
+                },
+                {
+                    "name": "proposal",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "vote",
+                    "isMut": true,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "positive",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "deleteVote",
+            "accounts": [
+                {
+                    "name": "signer",
+                    "isMut": false,
+                    "isSigner": true
+                },
+                {
+                    "name": "proposal",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "vote",
+                    "isMut": true,
+                    "isSigner": false
+                }
+            ],
+            "args": []
+        }
+    ],
+    "accounts": [
+        {
+            "name": "Proposal",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "author",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "program",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "proposedName",
+                        "type": "string"
+                    },
+                    {
+                        "name": "proposedType",
+                        "type": "string"
+                    },
+                    {
+                        "name": "score",
+                        "type": "i16"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Vote",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "author",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "proposal",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "positive",
+                        "type": "bool"
+                    }
+                ]
+            }
+        }
+    ],
+    "errors": [
+        {
+            "code": 6000,
+            "name": "NameTooLong",
+            "msg": "Name should not exceed 10 characters"
+        },
+        {
+            "code": 6001,
+            "name": "TypeTooLong",
+            "msg": "Type should not exceed 34 characters"
+        },
+        {
+            "code": 6002,
+            "name": "AlreadyUpvoted",
+            "msg": "Signer already upvoted this proposal"
+        },
+        {
+            "code": 6003,
+            "name": "AlreadyDownvoted",
+            "msg": "Signer already downvoted this proposal"
+        },
+        {
+            "code": 6004,
+            "name": "NotAuthorOrAdmin",
+            "msg": "Signer must be the author or admin"
+        }
+    ]
+}
