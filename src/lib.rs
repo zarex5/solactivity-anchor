@@ -22,7 +22,7 @@ pub mod solactivity {
         proposal.program = ctx.accounts.program.key();
         proposal.proposed_name = proposed_name;
         proposal.proposed_type = proposed_type;
-        proposal.score = 1;
+        proposal.score = 0;
         msg!(
             "Created proposal by:{} for program:{}",
             proposal.author,
@@ -43,7 +43,6 @@ pub mod solactivity {
     }
 
     pub fn create_vote(ctx: Context<CreateVote>, positive: bool) -> Result<()> {
-        //TODO: Prevent voting on own proposal
         let vote = &mut ctx.accounts.vote;
         vote.author = ctx.accounts.author.key();
         vote.proposal = ctx.accounts.proposal.key();
