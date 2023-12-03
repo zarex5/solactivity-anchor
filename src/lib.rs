@@ -12,16 +12,19 @@ pub mod solactivity {
 
     pub fn create_proposal(
         ctx: Context<CreateProposal>,
-        proposed_name: String,
-        proposed_type: String,
+        name: String,
+        group: String,
+        sub_group: String,
     ) -> Result<()> {
-        require!(proposed_name.len() <= 34, CustomError::NameTooLong);
-        require!(proposed_type.len() <= 10, CustomError::TypeTooLong);
+        require!(name.len() <= 34, CustomError::NameTooLong);
+        require!(group.len() <= 8, CustomError::GoupTooLong);
+        require!(sub_group.len() <= 18, CustomError::SubGoupTooLong);
         let proposal = &mut ctx.accounts.proposal;
         proposal.author = ctx.accounts.author.key();
         proposal.program = ctx.accounts.program.key();
-        proposal.proposed_name = proposed_name;
-        proposal.proposed_type = proposed_type;
+        proposal.name = name;
+        proposal.group = group;
+        proposal.sub_group = sub_group;
         proposal.score = 0;
         msg!(
             "Created proposal by:{} for program:{}",
@@ -98,7 +101,7 @@ pub struct CreateProposal<'info> {
         seeds = [author.key().as_ref(), program.key().as_ref()],
         bump,
         payer = author,
-        space = 124
+        space = 148
     )]
     proposal: Account<'info, Proposal>,
     system_program: Program<'info, System>,
@@ -147,13 +150,14 @@ pub struct DeleteVote<'info> {
 }
 
 // Data structures
-#[account] //8 + 116 = 124
+#[account] //8 + 140 = 148
 pub struct Proposal {
-    author: Pubkey,        //32
-    program: Pubkey,       //32
-    proposed_name: String, //4 + 34: 38
-    proposed_type: String, //4 + 10: 14
-    score: i16,            //2
+    author: Pubkey,    //32
+    program: Pubkey,   //32
+    name: String,      //4 + 34: 38
+    group: String,     //4 + 8: 12
+    sub_group: String, //4 + 18: 22
+    score: i32,        //4
 }
 
 #[account] //8 + 65 = 73
@@ -166,10 +170,12 @@ pub struct Vote {
 //Errors
 #[error_code]
 pub enum CustomError {
-    #[msg("Name should not exceed 10 characters")]
+    #[msg("Name should not exceed 34 characters")]
     NameTooLong,
-    #[msg("Type should not exceed 34 characters")]
-    TypeTooLong,
+    #[msg("Group should not exceed 8 characters")]
+    GoupTooLong,
+    #[msg("Sub Group should not exceed 18 characters")]
+    SubGoupTooLong,
     #[msg("Signer already upvoted this proposal")]
     AlreadyUpvoted,
     #[msg("Signer already downvoted this proposal")]
