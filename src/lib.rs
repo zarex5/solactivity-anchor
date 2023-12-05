@@ -1,5 +1,20 @@
 use anchor_lang::prelude::*;
 use solana_program::{pubkey, pubkey::Pubkey};
+use solana_security_txt::security_txt;
+
+#[cfg(not(feature = "no-entrypoint"))]
+security_txt! {
+    // Required fields
+    name: "Solactivity",
+    project_url: "https://solactivity.info",
+    contacts: "twitter:https://twitter.com/solactivity,link:https://forms.gle/N9tFXTGzm6nmWLYy5",
+    policy: "https://solactivity.info/security",
+    // Optional Fields
+    preferred_languages: "en",
+    //source_code: "https://github.com/example/example",
+    auditors: "None"
+    //acknowledgements: ""
+}
 
 declare_id!("acTiJkzfuF6vx8Z6GvH4JcZEWCyztU3M5L6BsQDzfNa");
 
