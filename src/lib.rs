@@ -1,6 +1,9 @@
 use anchor_lang::prelude::*;
 use solana_program::{pubkey, pubkey::Pubkey};
 use solana_security_txt::security_txt;
+use crate::errors::*;
+
+pub mod errors;
 
 #[cfg(not(feature = "no-entrypoint"))]
 security_txt! {
@@ -31,9 +34,9 @@ pub mod solactivity {
         group: String,
         sub_group: String,
     ) -> Result<()> {
-        require!(name.len() <= 34, CustomError::NameTooLong);
-        require!(group.len() <= 8, CustomError::GroupTooLong);
-        require!(sub_group.len() <= 18, CustomError::SubGroupTooLong);
+        require!(name.len() <= 34, SolactivityError::NameTooLong);
+        require!(group.len() <= 8, SolactivityError::GroupTooLong);
+        require!(sub_group.len() <= 18, SolactivityError::SubGroupTooLong);
         let proposal = &mut ctx.accounts.proposal;
         proposal.author = ctx.accounts.author.key();
         proposal.program = ctx.accounts.program.key();
@@ -53,7 +56,7 @@ pub mod solactivity {
         let signer = &mut ctx.accounts.signer;
         let proposal = &mut ctx.accounts.proposal;
         if signer.key() != proposal.author.key() && signer.key() != ADMIN_PUBKEY.key() {
-            return err!(CustomError::NotAuthorOrAdmin);
+            return err!(SolactivityError::NotAuthorOrAdmin);
         }
         //TODO: Delete all votes associated with the proposal? (+allow proposal owner to delete votes on its proposal)
         msg!("Deleting proposal!");
@@ -79,9 +82,9 @@ pub mod solactivity {
         let vote = &mut ctx.accounts.vote;
         if vote.positive == positive {
             return if positive {
-                err!(CustomError::AlreadyUpvoted)
+                err!(SolactivityError::AlreadyUpvoted)
             } else {
-                err!(CustomError::AlreadyDownvoted)
+                err!(SolactivityError::AlreadyDownvoted)
             };
         }
         vote.positive = positive;
@@ -95,7 +98,7 @@ pub mod solactivity {
         let signer = &mut ctx.accounts.signer;
         let vote = &mut ctx.accounts.vote;
         if signer.key() != vote.author.key() && signer.key() != ADMIN_PUBKEY.key() {
-            return err!(CustomError::NotAuthorOrAdmin);
+            return err!(SolactivityError::NotAuthorOrAdmin);
         }
         let proposal = &mut ctx.accounts.proposal;
         proposal.score += if vote.positive { -1 } else { 1 };
@@ -181,21 +184,4 @@ pub struct Vote {
     author: Pubkey,   //32
     proposal: Pubkey, //32
     positive: bool,   //1
-}
-
-//Errors
-#[error_code]
-pub enum CustomError {
-    #[msg("Name should not exceed 34 characters")]
-    NameTooLong,
-    #[msg("Group should not exceed 8 characters")]
-    GroupTooLong,
-    #[msg("Sub Group should not exceed 18 characters")]
-    SubGroupTooLong,
-    #[msg("Signer already upvoted this proposal")]
-    AlreadyUpvoted,
-    #[msg("Signer already downvoted this proposal")]
-    AlreadyDownvoted,
-    #[msg("Signer must be the author or admin")]
-    NotAuthorOrAdmin,
 }
