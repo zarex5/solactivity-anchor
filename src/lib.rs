@@ -2,8 +2,11 @@ use anchor_lang::prelude::*;
 use solana_program::{pubkey, pubkey::Pubkey};
 use solana_security_txt::security_txt;
 use crate::errors::*;
+use state::proposal::Proposal;
+use state::vote::Vote; //TODO: Group if both states stay together
 
 pub mod errors;
+pub mod state;
 
 #[cfg(not(feature = "no-entrypoint"))]
 security_txt! {
@@ -166,22 +169,4 @@ pub struct DeleteVote<'info> {
     proposal: Account<'info, Proposal>,
     #[account(mut, close = signer)]
     vote: Account<'info, Vote>,
-}
-
-// Data structures
-#[account] //8 + 140 = 148
-pub struct Proposal {
-    author: Pubkey,    //32
-    program: Pubkey,   //32
-    name: String,      //4 + 34: 38
-    group: String,     //4 + 8: 12
-    sub_group: String, //4 + 18: 22
-    score: i32,        //4
-}
-
-#[account] //8 + 65 = 73
-pub struct Vote {
-    author: Pubkey,   //32
-    proposal: Pubkey, //32
-    positive: bool,   //1
 }
