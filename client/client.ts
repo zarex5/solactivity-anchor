@@ -1,16 +1,18 @@
 import { PublicKey, SystemProgram, TransactionSignature, Connection } from "@solana/web3.js";
 import { AnchorProvider, Program, ProgramAccount, Wallet } from "@coral-xyz/anchor";
-import { IDL } from "../idl/IDL";
+import { IDL } from "../../idl/IDL";
 
 const PROGRAM_ID = new PublicKey("CuVwVRBD5pVvzmnKsaTmVjaL1aeRSHDEusnJ45TXAKXm");
 
-export function getProgramInstance(connection: Connection, wallet: Wallet): Program {
-    if (!wallet.publicKey) return;
-    const provider = new AnchorProvider(
-        connection,
-        wallet,
-        AnchorProvider.defaultOptions()
-    );
+export function getProgramInstance(connection: Connection, wallet?: Wallet): Program {
+    let provider = { connection };
+    if (wallet && wallet.publicKey) {
+        provider = new AnchorProvider(
+            connection,
+            wallet,
+            AnchorProvider.defaultOptions()
+        );
+    }
     return new Program(IDL, PROGRAM_ID, provider);
 }
 
@@ -22,14 +24,14 @@ export function getVotes(pg: Program): Promise<ProgramAccount[]> {
     return pg.account.vote.all();
 }
 
-export async function createProposal(pg: Program, program: string, name: string, type: string): Promise<TransactionSignature> {
+export async function createProposal(pg: Program, program: string, name: string, group: string, subGroup: string): Promise<TransactionSignature> {
     let programPk = new PublicKey(program);
     const [proposalPDA, _] = await PublicKey.findProgramAddress(
         [pg.provider.publicKey.toBuffer(), programPk.toBuffer()],
         pg.programId
     );
     return pg.methods
-        .createProposal(name, type)
+        .createProposal(name, group, subGroup)
         .accounts({
             author: pg.provider.publicKey,
             program: programPk,
