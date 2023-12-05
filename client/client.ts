@@ -2,7 +2,7 @@ import { PublicKey, SystemProgram, TransactionSignature, Connection } from "@sol
 import { AnchorProvider, Program, ProgramAccount, Wallet } from "@coral-xyz/anchor";
 import { IDL } from "../../idl/IDL";
 
-const PROGRAM_ID = new PublicKey("CuVwVRBD5pVvzmnKsaTmVjaL1aeRSHDEusnJ45TXAKXm");
+const PROGRAM_ID = new PublicKey("acTiJkzfuF6vx8Z6GvH4JcZEWCyztU3M5L6BsQDzfNa");
 
 export function getProgramInstance(connection: Connection, wallet?: Wallet): Program {
     let provider = { connection };

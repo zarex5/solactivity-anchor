@@ -1,9 +1,9 @@
 use anchor_lang::prelude::*;
 use solana_program::{pubkey, pubkey::Pubkey};
 
-declare_id!("CuVwVRBD5pVvzmnKsaTmVjaL1aeRSHDEusnJ45TXAKXm");
+declare_id!("acTiJkzfuF6vx8Z6GvH4JcZEWCyztU3M5L6BsQDzfNa");
 
-const ADMIN_PUBKEY: Pubkey = pubkey!("J5gtLJ5kohxPs4qDrNzbSGGNireSV683nfTbGUKLptE6");
+const ADMIN_PUBKEY: Pubkey = pubkey!("ANcHrHbApAcPqfYPs3WegLytaQhsHt6UYAGVsDjJeuhX");
 
 #[program]
 // Smart contract functions
@@ -95,6 +95,7 @@ pub struct CreateProposal<'info> {
     #[account(mut)]
     author: Signer<'info>,
     #[account(executable)]
+    /// CHECK: Any program address is okay (we don't read or write from this account)
     program: UncheckedAccount<'info>,
     #[account(
         init,
