@@ -1,6 +1,6 @@
 import { PublicKey, SystemProgram, TransactionSignature, Connection } from "@solana/web3.js";
 import { AnchorProvider, Program, ProgramAccount, Wallet } from "@coral-xyz/anchor";
-import { IDL } from "../../idl/IDL";
+import { IDL } from "./idl";
 
 const PROGRAM_ID = new PublicKey("acTiJkzfuF6vx8Z6GvH4JcZEWCyztU3M5L6BsQDzfNa");
 
