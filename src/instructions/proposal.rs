@@ -52,7 +52,7 @@ pub struct CreateProposal<'info> {
         seeds = [author.key().as_ref(), program.key().as_ref()],
         bump,
         payer = author,
-        space = 148
+        space = Proposal::MAXIMUM_SIZE + 8
     )]
     proposal: Account<'info, Proposal>,
     system_program: Program<'info, System>,

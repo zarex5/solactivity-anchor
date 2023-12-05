@@ -60,7 +60,7 @@ pub struct CreateVote<'info> {
         seeds = [author.key().as_ref(), proposal.key().as_ref()],
         bump,
         payer = author,
-        space = 73
+        space = Vote::MAXIMUM_SIZE + 8
     )]
     vote: Account<'info, Vote>,
     system_program: Program<'info, System>,

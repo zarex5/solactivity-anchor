@@ -1,8 +1,12 @@
 use anchor_lang::prelude::*;
 
-#[account] //8 + 65 = 73
+#[account]
 pub struct Vote {
-    pub author: Pubkey,   //32
-    pub proposal: Pubkey, //32
-    pub positive: bool,   //1
+    pub author: Pubkey,   // 32
+    pub proposal: Pubkey, // 32
+    pub positive: bool,   // 1
+}
+
+impl Vote {
+    pub const MAXIMUM_SIZE: usize = 32 + 32 + 1;
 }
