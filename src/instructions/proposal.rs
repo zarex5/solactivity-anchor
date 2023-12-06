@@ -9,22 +9,8 @@ pub fn create_proposal(
     group: String,
     sub_group: String,
 ) -> Result<()> {
-    require!(name.len() <= 34, SolactivityError::NameTooLong);
-    require!(group.len() <= 8, SolactivityError::GroupTooLong);
-    require!(sub_group.len() <= 18, SolactivityError::SubGroupTooLong);
     let proposal = &mut ctx.accounts.proposal;
-    proposal.author = ctx.accounts.author.key();
-    proposal.program = ctx.accounts.program.key();
-    proposal.name = name;
-    proposal.group = group;
-    proposal.sub_group = sub_group;
-    proposal.score = 0;
-    msg!(
-        "Created proposal by:{} for program:{}",
-        proposal.author,
-        proposal.program
-    );
-    Ok(())
+    proposal.setup(ctx.accounts.author.key(), ctx.accounts.program.key(), name, group, sub_group, 0)
 }
 
 pub fn migrate_proposal(
@@ -32,24 +18,11 @@ pub fn migrate_proposal(
     name: String,
     group: String,
     sub_group: String,
+    score: i32,
 ) -> Result<()> {
     require!(ctx.accounts.signer.key() == ADMIN_PUBKEY.key(), SolactivityError::NotAdmin);
-    require!(name.len() <= 34, SolactivityError::NameTooLong);
-    require!(group.len() <= 8, SolactivityError::GroupTooLong);
-    require!(sub_group.len() <= 18, SolactivityError::SubGroupTooLong);
     let proposal = &mut ctx.accounts.proposal;
-    proposal.author = ctx.accounts.author.key();
-    proposal.program = ctx.accounts.program.key();
-    proposal.name = name;
-    proposal.group = group;
-    proposal.sub_group = sub_group;
-    proposal.score = 0;
-    msg!(
-        "Migrated proposal by:{} for program:{}",
-        proposal.author,
-        proposal.program
-    );
-    Ok(())
+    proposal.setup(ctx.accounts.author.key(), ctx.accounts.program.key(), name, group, sub_group, score)
 }
 
 pub fn delete_proposal(ctx: Context<DeleteProposal>) -> Result<()> {
