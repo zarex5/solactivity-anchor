@@ -6,33 +6,16 @@ use anchor_lang::prelude::*;
 
 pub fn create_vote(ctx: Context<CreateVote>, positive: bool) -> Result<()> {
     let vote = &mut ctx.accounts.vote;
-    vote.author = ctx.accounts.author.key();
-    vote.proposal = ctx.accounts.proposal.key();
-    vote.positive = positive;
     let proposal = &mut ctx.accounts.proposal;
     proposal.score += if positive { 1 } else { -1 };
-    msg!(
-        "Created vote by:{} for proposal:{}",
-        vote.author,
-        vote.proposal
-    );
-    Ok(())
+    vote.setup(ctx.accounts.author.key(), ctx.accounts.proposal.key(), positive)
 }
 
 pub fn change_vote(ctx: Context<ChangeVote>, positive: bool) -> Result<()> {
     let vote = &mut ctx.accounts.vote;
-    if vote.positive == positive {
-        return if positive {
-            err!(SolactivityError::AlreadyUpvoted)
-        } else {
-            err!(SolactivityError::AlreadyDownvoted)
-        };
-    }
-    vote.positive = positive;
     let proposal = &mut ctx.accounts.proposal;
     proposal.score += if positive { 2 } else { -2 };
-    msg!("Changed vote to positive:{}", vote.positive);
-    Ok(())
+    vote.change_vote(positive)
 }
 
 pub fn delete_vote(ctx: Context<DeleteVote>) -> Result<()> {
