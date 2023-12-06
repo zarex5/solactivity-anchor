@@ -14,4 +14,6 @@ pub enum SolactivityError {
     AlreadyDownvoted,
     #[msg("Signer must be the author or admin")]
     NotAuthorOrAdmin,
+    #[msg("Signer must be admin")]
+    NotAdmin,
 }
