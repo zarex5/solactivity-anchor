@@ -18,6 +18,10 @@ impl Proposal {
         &self.author
     }
 
+    pub fn increment_score(&mut self, nb: i32) {
+        self.score += nb;
+    }
+
     pub fn setup(&mut self, author: Pubkey, program: Pubkey, name: String, group: String, sub_group: String, score: i32) -> Result<()> {
         require!(name.len() <= 34, SolactivityError::NameTooLong);
         require!(group.len() <= 8, SolactivityError::GroupTooLong);
@@ -36,9 +40,5 @@ impl Proposal {
             self.program
         );
         Ok(())
-    }
-
-    pub fn increment_score(&mut self, nb: i32) {
-        self.score += nb;
     }
 }

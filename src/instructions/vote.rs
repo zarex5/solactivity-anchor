@@ -22,7 +22,7 @@ pub fn delete_vote(ctx: Context<DeleteVote>) -> Result<()> {
     let signer = &mut ctx.accounts.signer;
     let vote = &mut ctx.accounts.vote;
     if signer.key() != vote.author().key() && signer.key() != ADMIN_PUBKEY.key() {
-        return err!(SolactivityError::NotAuthorOrAdmin);
+        return err!(SolactivityError::NotAuthorOrAdmin)
     }
     let proposal = &mut ctx.accounts.proposal;
     proposal.increment_score(if *vote.positive() { -1 } else { 1 });

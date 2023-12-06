@@ -39,7 +39,7 @@ pub struct CreateProposal<'info> {
     #[account(mut)]
     author: Signer<'info>,
     #[account(executable)]
-    /// CHECK: Any program address is okay (we don't read or write from this account)
+    /// CHECK: Any program address is okay, we don't read or write from this account
     program: UncheckedAccount<'info>,
     #[account(
         init,
@@ -57,10 +57,10 @@ pub struct MigrateProposal<'info> {
     #[account(mut)]
     signer: Signer<'info>,
     #[account()]
-    /// CHECK: Any user address is okay (we don't read or write from this account)
+    /// CHECK: Any user address is okay, we don't read or write from this account
     author: UncheckedAccount<'info>,
     #[account(executable)]
-    /// CHECK: Any program address is okay (we don't read or write from this account)
+    /// CHECK: Any program address is okay, we don't read or write from this account
     program: UncheckedAccount<'info>,
     #[account(
         init,
