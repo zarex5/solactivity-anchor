@@ -4,13 +4,21 @@ use anchor_lang::prelude::*;
 #[account]
 pub struct Vote {
     pub author: Pubkey,   // 32
-    pub proposal: Pubkey, // 32
-    pub positive: bool,   // 1
+    proposal: Pubkey, // 32
+    positive: bool,   // 1
 }
 
 impl Vote {
     pub const MAXIMUM_SIZE: usize = 32 + 32 + 1;
 
+    pub fn author(&self) -> &Pubkey {
+        &self.author
+    }
+    
+    pub fn positive(&self) -> &bool {
+        &self.positive
+    }
+    
     pub fn setup(&mut self, author: Pubkey, proposal: Pubkey, positive: bool) -> Result<()> {
         self.author = author;
         self.proposal = proposal;

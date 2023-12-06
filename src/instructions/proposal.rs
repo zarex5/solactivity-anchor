@@ -28,7 +28,7 @@ pub fn migrate_proposal(
 pub fn delete_proposal(ctx: Context<DeleteProposal>) -> Result<()> {
     let signer = &mut ctx.accounts.signer;
     let proposal = &mut ctx.accounts.proposal;
-    if signer.key() != proposal.author.key() && signer.key() != ADMIN_PUBKEY.key() {
+    if signer.key() != proposal.author().key() && signer.key() != ADMIN_PUBKEY.key() {
         return err!(SolactivityError::NotAuthorOrAdmin)
     }
     Ok(())
