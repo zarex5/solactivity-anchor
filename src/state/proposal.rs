@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 #[account]
-pub struct Proposal { //TODO: set properties back to non pub and use getters/setters?
+pub struct Proposal {
     pub author: Pubkey,    // 32
     pub program: Pubkey,   // 32
     pub name: String,      // 4 + 34

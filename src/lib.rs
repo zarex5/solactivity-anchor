@@ -9,16 +9,12 @@ pub mod constants;
 
 #[cfg(not(feature = "no-entrypoint"))]
 security_txt! {
-    // Required fields
     name: "Solactivity",
     project_url: "https://solactivity.info",
-    contacts: "twitter:https://twitter.com/solactivity,link:https://forms.gle/N9tFXTGzm6nmWLYy5",
+    contacts: "link:https://twitter.com/solactivity",
     policy: "https://solactivity.info/security",
-    // Optional Fields
     preferred_languages: "en",
-    //source_code: "https://github.com/example/example",
     auditors: "None"
-    //acknowledgements: ""
 }
 
 declare_id!("acTiJkzfuF6vx8Z6GvH4JcZEWCyztU3M5L6BsQDzfNa");
