@@ -1,9 +1,7 @@
 use crate::errors::SolactivityError;
+use crate::constants::ADMIN_PUBKEY;
 use crate::state::proposal::*;
 use anchor_lang::prelude::*;
-use solana_program::{pubkey};
-
-const ADMIN_PUBKEY: Pubkey = pubkey!("ANcHrHbApAcPqfYPs3WegLytaQhsHt6UYAGVsDjJeuhX"); //TODO: Remove duplicate
 
 pub fn create_proposal(
     ctx: Context<CreateProposal>,

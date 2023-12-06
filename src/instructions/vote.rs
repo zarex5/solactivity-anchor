@@ -1,10 +1,8 @@
 use crate::errors::SolactivityError;
+use crate::constants::ADMIN_PUBKEY;
 use crate::state::proposal::*;
 use crate::state::vote::*;
 use anchor_lang::prelude::*;
-use solana_program::{pubkey};
-
-const ADMIN_PUBKEY: Pubkey = pubkey!("ANcHrHbApAcPqfYPs3WegLytaQhsHt6UYAGVsDjJeuhX"); //TODO: Remove duplicate
 
 pub fn create_vote(ctx: Context<CreateVote>, positive: bool) -> Result<()> {
     let vote = &mut ctx.accounts.vote;

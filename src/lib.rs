@@ -5,6 +5,7 @@ use instructions::*;
 pub mod errors;
 pub mod instructions;
 pub mod state;
+pub mod constants;
 
 #[cfg(not(feature = "no-entrypoint"))]
 security_txt! {
