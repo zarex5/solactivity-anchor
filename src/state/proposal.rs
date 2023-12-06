@@ -33,4 +33,8 @@ impl Proposal {
         );
         Ok(())
     }
+
+    pub fn increment_score(&mut self, nb: i32) {
+        self.score += nb;
+    }
 }

@@ -29,10 +29,8 @@ pub fn delete_proposal(ctx: Context<DeleteProposal>) -> Result<()> {
     let signer = &mut ctx.accounts.signer;
     let proposal = &mut ctx.accounts.proposal;
     if signer.key() != proposal.author.key() && signer.key() != ADMIN_PUBKEY.key() {
-        return err!(SolactivityError::NotAuthorOrAdmin);
+        return err!(SolactivityError::NotAuthorOrAdmin)
     }
-    //TODO: Delete all votes associated with the proposal? (+allow proposal owner to delete votes on its proposal)
-    msg!("Deleting proposal!");
     Ok(())
 }
 

@@ -5,16 +5,16 @@ use crate::state::vote::*;
 use anchor_lang::prelude::*;
 
 pub fn create_vote(ctx: Context<CreateVote>, positive: bool) -> Result<()> {
-    let vote = &mut ctx.accounts.vote;
     let proposal = &mut ctx.accounts.proposal;
-    proposal.score += if positive { 1 } else { -1 };
+    proposal.increment_score(if positive { 1 } else { -1 });
+    let vote = &mut ctx.accounts.vote;
     vote.setup(ctx.accounts.author.key(), ctx.accounts.proposal.key(), positive)
 }
 
 pub fn change_vote(ctx: Context<ChangeVote>, positive: bool) -> Result<()> {
-    let vote = &mut ctx.accounts.vote;
     let proposal = &mut ctx.accounts.proposal;
-    proposal.score += if positive { 2 } else { -2 };
+    proposal.increment_score(if positive { 2 } else { -2 });
+    let vote = &mut ctx.accounts.vote;
     vote.change_vote(positive)
 }
 
@@ -25,8 +25,7 @@ pub fn delete_vote(ctx: Context<DeleteVote>) -> Result<()> {
         return err!(SolactivityError::NotAuthorOrAdmin);
     }
     let proposal = &mut ctx.accounts.proposal;
-    proposal.score += if vote.positive { -1 } else { 1 };
-    msg!("Deleting vote!");
+    proposal.increment_score(if vote.positive { -1 } else { 1 });
     Ok(())
 }
 
