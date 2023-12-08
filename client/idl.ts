@@ -1,7 +1,7 @@
 import { Idl } from "@coral-xyz/anchor";
 
 export const IDL: Idl = {
-  "version": "0.1.1",
+  "version": "0.1.2",
   "name": "solactivity",
   "instructions": [
     {
@@ -40,6 +40,54 @@ export const IDL: Idl = {
         {
           "name": "subGroup",
           "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "migrateProposal",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "author",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "program",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "proposal",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "group",
+          "type": "string"
+        },
+        {
+          "name": "subGroup",
+          "type": "string"
+        },
+        {
+          "name": "score",
+          "type": "i32"
         }
       ]
     },
@@ -222,6 +270,11 @@ export const IDL: Idl = {
       "code": 6005,
       "name": "NotAuthorOrAdmin",
       "msg": "Signer must be the author or admin"
+    },
+    {
+      "code": 6006,
+      "name": "NotAdmin",
+      "msg": "Signer must be admin"
     }
   ],
   "metadata": {

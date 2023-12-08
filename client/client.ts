@@ -41,6 +41,25 @@ export async function createProposal(pg: Program, program: string, name: string,
         .rpc();
 }
 
+export async function migrateProposal(pg: Program, author: string, program: string, name: string, group: string, subGroup: string, score: number): Promise<TransactionSignature> {
+    let authorPk = new PublicKey(author);
+    let programPk = new PublicKey(program);
+    const [proposalPDA, _] = await PublicKey.findProgramAddress(
+        [authorPk.toBuffer(), programPk.toBuffer()],
+        pg.programId
+    );
+    return pg.methods
+        .migrateProposal(name, group, subGroup, score)
+        .accounts({
+            signer: pg.provider.publicKey,
+            author: authorPk,
+            program: programPk,
+            proposal: proposalPDA,
+            systemProgram: SystemProgram.programId
+        })
+        .rpc();
+}
+
 export function deleteProposal(pg: Program, proposal: string): Promise<TransactionSignature> {
     return pg.methods
         .deleteProposal()
