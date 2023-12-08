@@ -59,7 +59,7 @@ pub struct MigrateProposal<'info> {
     #[account()]
     /// CHECK: Any user address is okay, we don't read or write from this account
     author: UncheckedAccount<'info>,
-    #[account(executable)]
+    #[account()]
     /// CHECK: Any program address is okay, we don't read or write from this account
     program: UncheckedAccount<'info>,
     #[account(

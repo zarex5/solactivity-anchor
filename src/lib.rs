@@ -32,6 +32,16 @@ pub mod solactivity {
         instructions::proposal::create_proposal(ctx, name, group, sub_group)
     }
 
+    pub fn migrate_proposal(
+        ctx: Context<MigrateProposal>,
+        name: String,
+        group: String,
+        sub_group: String,
+        score: i32,
+    ) -> Result<()> {
+        instructions::proposal::migrate_proposal(ctx, name, group, sub_group, score)
+    }
+
     pub fn delete_proposal(ctx: Context<DeleteProposal>) -> Result<()> {
         instructions::proposal::delete_proposal(ctx)
     }
